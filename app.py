@@ -120,14 +120,24 @@ def logout():
 
 @app.route('/login/<method>', methods=['GET', 'POST'])
 def login(method):
-    if method == 'Google':
+    if method == 'Google' and request.method == 'GET':
         google = oauth.create_client('google')  # create the google oauth client
         redirect_uri = url_for('authorize_google', _external=True)
         return google.authorize_redirect(redirect_uri)
-    elif method == 'Username':
+    elif method == 'Username' and request.method == 'POST':
         redirect_uri = url_for('frontPage')
-        session['email'] = 'test_Username_method'
-        return redirect(redirect_uri)
+        email = request.form.get('email')
+        password = request.form.get('password')
+        c = conn.cursor()
+        c.execute(f"SELECT email FROM Users u WHERE u.email = '{email}' and u.password = '{password}'")
+        result = c.fetchone()
+        if result is not None:
+            user = User()
+            user.id = email
+            login_user(user)
+            return redirect(redirect_uri)
+        else:
+            return f"Wrong Username or password!"
 
 
 @app.route('/register', methods=['POST'])
