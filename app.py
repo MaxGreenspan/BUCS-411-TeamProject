@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from flask import Flask, redirect, request, url_for, session
+from flask import Flask, redirect, request, url_for, session, render_template
 from flask_login import (
     LoginManager,
     current_user,
@@ -93,12 +93,12 @@ def user_loader(email):
 
 
 @app.route('/')
-def hello_world():
+def frontPage():
     if request.args.get('test') == 'True':
-        return "Hello testing!"
+        return render_template('frontend.html')
     elif not current_user.is_authenticated:
-        return "Hello!"
-    return f'Hello,you are logged in as {current_user.id}'
+        return f"Hello!"
+    return f"Hello, you are logged in as {current_user.id}"
 
 
 @app.route('/testLog')
@@ -152,11 +152,11 @@ def authorize_google():
     user.id = userinfo['email']
     c = conn.cursor()
     if not isRegistered(user.id):
-        c.execute(f"INSERT INTO Users(email) VALUES ({user.id})")
+        c.execute(f"INSERT INTO Users(email) VALUES ('{user.id}')")
         conn.commit()
     login_user(user)
     # session.permanent = True  # make the session permanent so it keeps existing after browser gets closed
-    return redirect(url_for('hello_world'))
+    return redirect(url_for('frontPage'))
 
 
 if __name__ == '__main__':
