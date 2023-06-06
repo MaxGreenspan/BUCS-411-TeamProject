@@ -16,13 +16,14 @@ from flaskext.mysql import MySQL
 import os
 import base64
 import time
+import openai
 
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 google_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
 
 # This will read the secret from file.
 # WE SHOULD NOT PUBLISH OUR SECRET
-with open('./secrets/google_secret') as f:
+with open("C:/Users/R00Q1Z/PycharmProjects/BUCS-411-TeamProject/secrets/google_secret") as f:
     google_secret = f.readline()
 
 mysql = MySQL()
@@ -31,7 +32,7 @@ app = Flask(__name__)
 # These will need to be changed according to your credentials.
 # about things that needs to be changed, see comments.
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'zhuceyezi'  # NOTE:change this to your mysql password.
+app.config['MYSQL_DATABASE_PASSWORD'] = 'BostonU#3087'  # NOTE:change this to your mysql password.
 app.config['MYSQL_DATABASE_DB'] = 'CS411'  # Also change this if your database name is not CS411.
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -79,6 +80,35 @@ def isRegistered(email):
     c.execute(f"SELECT email FROM Users WHERE Users.email='{email}'")
     result = c.fetchone()
     return result is not None
+
+def getquote(keyword):
+    openai.api_key = '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'
+    messages = [{"role": "system",
+                 "content": "Generate a quote within 30 words without an author in quotation marks only based solely on a single word that users enter. If the word entered is invalid, just return the string 'idk' and nothing else."}]
+
+    # message = input("Please Enter a Word: ")
+    message = keyword
+
+    if len(message.split()) > 1:
+        print("Only a single word is allowed!")
+        return -1
+
+    if message:
+        messages.append(
+            {"role": "user", "content": message},
+        )
+        chat = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo", messages=messages
+        )
+    reply = chat.choices[0].message.content
+    if reply == "idk":
+        print("ChatGPT cannot understand your input!")
+        return -1
+    # print(f"ChatGPT: {reply}")
+    messages.append({"role": "assistant", "content": reply})
+
+    return reply
+
 
 
 @login_manager.user_loader
@@ -167,6 +197,13 @@ def authorize_google():
     login_user(user)
     # session.permanent = True  # make the session permanent so it keeps existing after browser gets closed
     return redirect(url_for('frontPage'))
+
+
+@app.route('/testquote')
+def testquote():
+    keyword = request.args.get('keyword')
+    quote = getquote(keyword)
+    return quote
 
 
 if __name__ == '__main__':
