@@ -27,13 +27,16 @@ google_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
 with open("secrets/google_secret") as f:
     google_secret = f.readline()
 
+with open("secrets/chatgpt_api_key") as f:
+    openai.api_key = f.readline()
+
 mysql = MySQL()
 app = Flask(__name__)
 
 # These will need to be changed according to your credentials.
 # about things that needs to be changed, see comments.
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'BostonU#3087'  # NOTE:change this to your mysql password.
+app.config['MYSQL_DATABASE_PASSWORD'] = 'zhuceyezi'  # NOTE:change this to your mysql password.
 app.config['MYSQL_DATABASE_DB'] = 'CS411'  # Also change this if your database name is not CS411.
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -90,7 +93,6 @@ def isRegistered(email):
 
 
 def getquote(keyword):
-    openai.api_key = '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'
     messages = [{"role": "system",
                  "content": "Generate a quote within 30 words without an author in quotation marks only based solely on a single word that users enter. If the word entered is invalid, just return the string 'idk' and nothing else."}]
 
@@ -116,8 +118,8 @@ def getquote(keyword):
 
     return reply
 
+
 def getprompt(quote):
-    openai.api_key = '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'
     messages = [{"role": "system",
                  "content": "Create a prompt in 30 words or less that generates an image based on the quote I send you."}]
 
@@ -227,11 +229,13 @@ def authorize_google():
     # session.permanent = True  # make the session permanent so it keeps existing after browser gets closed
     return redirect(url_for('frontPage'))
 
+
 @app.route('/testquote')
 def testquote():
     keyword = request.args.get('keyword')
     quote = getquote(keyword)
     return quote
+
 
 @app.route('/testprompt')
 def testprompt():
@@ -239,6 +243,7 @@ def testprompt():
     quote = getquote(keyword)
     prompt = getprompt(quote)
     return prompt
+
 
 @app.route('/testimg')
 def testimg():
