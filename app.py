@@ -8,6 +8,7 @@ from flask_login import (
     login_user,
     logout_user, UserMixin,
 )
+from pathlib import Path
 from authlib.integrations.flask_client import OAuth
 import requests
 # mysql
@@ -23,7 +24,7 @@ google_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
 
 # This will read the secret from file.
 # WE SHOULD NOT PUBLISH OUR SECRET
-with open("C:/Users/R00Q1Z/PycharmProjects/BUCS-411-TeamProject/secrets/google_secret") as f:
+with open("secrets/google_secret") as f:
     google_secret = f.readline()
 
 mysql = MySQL()
@@ -32,7 +33,7 @@ app = Flask(__name__)
 # These will need to be changed according to your credentials.
 # about things that needs to be changed, see comments.
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'BostonU#3087'  # NOTE:change this to your mysql password.
+app.config['MYSQL_DATABASE_PASSWORD'] = 'zhuceyezi'  # NOTE:change this to your mysql password.
 app.config['MYSQL_DATABASE_DB'] = 'CS411'  # Also change this if your database name is not CS411.
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -62,7 +63,9 @@ login_manager.init_app(app)
 
 # Mysql cursor.
 conn = mysql.connect()
-cursor = conn.cursor()
+
+
+# cursor = conn.cursor()
 
 
 class User(UserMixin):
@@ -75,11 +78,16 @@ def getUserList():
     return cursor.fetchall()
 
 
+def parseImgName(url):
+    return url.split('/')[-1]
+
+
 def isRegistered(email):
     c = conn.cursor()
     c.execute(f"SELECT email FROM Users WHERE Users.email='{email}'")
     result = c.fetchone()
     return result is not None
+
 
 def getquote(keyword):
     openai.api_key = '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'
@@ -108,7 +116,6 @@ def getquote(keyword):
     messages.append({"role": "assistant", "content": reply})
 
     return reply
-
 
 
 @login_manager.user_loader
@@ -207,6 +214,26 @@ def testquote():
     keyword = request.args.get('keyword')
     quote = getquote(keyword)
     return quote
+
+
+@app.route('/testimg')
+def testimg():
+    path = request.args.get('path')
+    # https://stackoverflow.com/questions/7389567/output-images-to-html-using-python
+    data_uri = base64.b64encode(open(f'{path}', 'rb').read()).decode('utf-8')
+    img = '<img src="data:image/png;base64,{0}">'.format(data_uri)
+    return img
+
+
+@app.route('/download')
+def download():
+    image_url = request.args.get('url')
+    img_data = requests.get(image_url).content
+    img_name = Path(__file__).parent + "/img" + parseImgName(image_url)
+    with open(f'{img_name}', 'wb') as handler:
+        handler.write(img_data)
+
+    return redirect(url_for('testimg', path=img_name))
 
 
 if __name__ == '__main__':
