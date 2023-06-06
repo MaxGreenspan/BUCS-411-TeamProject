@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inspirational Quote Generator</title>
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="text" id="keywordInput" placeholder="Enter your keywords">
+        <button onclick="generateQuote()">Generate</button>
+        <div id="quoteContainer"></div>
+        <div id="imageContainer"></div>
+    </div>
+
+    <script>
+        function generateQuote() {
+            var keywordInput = document.getElementById("keywordInput").value;
+            // Perform API call or data processing here to generate the quote and image based on the keywordInput
+            // Replace the following lines with your actual implementation
+            var generatedQuote = "This is a generated quote.";
+            var generatedImage = "uglyaa.png"; // Update the image file name and path if necessary
+            displayGeneratedContent(generatedQuote, generatedImage);
+        }
+
+        function displayGeneratedContent(quote, image) {
+            var quoteContainer = document.getElementById("quoteContainer");
+            quoteContainer.innerHTML = "<p>" + quote + "</p>";
+
+            var imageContainer = document.getElementById("imageContainer");
+            imageContainer.innerHTML = "<img src='" + image + "' alt='Generated Image'>";
+        }
+    </script>
+</body>
+</html>
