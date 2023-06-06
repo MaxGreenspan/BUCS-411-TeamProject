@@ -8,6 +8,8 @@ Liang Han - lianghan@bu.edu
 
 Qirong Zhang - vasily53@bu.edu
 
+Stefan Pretorius - stefanjp@bu.edu
+
 **Project Title: Inspirational Quote Generator and Visualization Tool**
 
 *Description:*
