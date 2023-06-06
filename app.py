@@ -125,7 +125,7 @@ def login(method):
         redirect_uri = url_for('authorize_google', _external=True)
         return google.authorize_redirect(redirect_uri)
     elif method == 'Username':
-        redirect_uri = url_for('hello_world')
+        redirect_uri = url_for('frontPage')
         session['email'] = 'test_Username_method'
         return redirect(redirect_uri)
 
