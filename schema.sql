@@ -10,3 +10,4 @@ INSERT INTO Users(email) VALUES("lianghan@bu.edu");
 INSERT INTO Users(email) VALUES("maxgspan@bu.edu");
 INSERT INTO Users(email) VALUES("stefanjacobp@gmail.com");
 INSERT INTO Users(email) VALUES("jmsrng.trash@gmail.com");
+INSERT INTO Users(email) VALUES("mgreenspan42@gmail.com");

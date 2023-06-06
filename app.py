@@ -74,9 +74,16 @@ def getUserList():
     return cursor.fetchall()
 
 
+def isRegistered(email):
+    c = conn.cursor()
+    c.execute(f"SELECT email FROM Users WHERE Users.email='{email}'")
+    result = c.fetchone()
+    return result is not None
+
+
 @login_manager.user_loader
 def user_loader(email):
-    print("user_loader")
+    # print("user_loader")
     users = getUserList()
     if not (email) or email not in str(users):
         return
@@ -87,7 +94,6 @@ def user_loader(email):
 
 @app.route('/')
 def hello_world():
-    # if session has email then get email else get None
     if request.args.get('test') == 'True':
         return "Hello testing!"
     elif not current_user.is_authenticated:
@@ -124,6 +130,19 @@ def login(method):
         return redirect(redirect_uri)
 
 
+@app.route('/register', methods=['POST'])
+def register():
+    c = conn.cursor()
+    email = request.form.get('email')
+    password = request.form.get('password')
+    if not isRegistered(email):
+        c.execute(f"INSERT INTO Users VALUES('{email}','{password}')")
+        conn.commit()
+        return f"Successfully registered {email} with pw:{password}"
+    else:
+        return f"Email {email} is already registered!"
+
+
 @app.route('/authorize_google')
 def authorize_google():
     google = oauth.create_client('google')  # create the google oauth client
@@ -131,6 +150,10 @@ def authorize_google():
     userinfo = oauth.google.userinfo()
     user = User()
     user.id = userinfo['email']
+    c = conn.cursor()
+    if not isRegistered(user.id):
+        c.execute(f"INSERT INTO Users(email) VALUES ({user.id})")
+        conn.commit()
     login_user(user)
     # session.permanent = True  # make the session permanent so it keeps existing after browser gets closed
     return redirect(url_for('hello_world'))
