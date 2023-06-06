@@ -137,7 +137,10 @@ def login(method):
             login_user(user)
             return redirect(redirect_uri)
         else:
-            return f"Wrong Username or password!"
+            c.execute(f"SELECT email FROM Users u WHERE u.email = '{email}'")
+            if c.fetchone() is not None:
+                return f"Wrong Username or password!"
+            return f"Not registered yet!"
 
 
 @app.route('/register', methods=['POST'])
