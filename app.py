@@ -142,11 +142,18 @@ def getprompt(quote):
     return reply
 
 
+def getImgPathFromName(imgName):
+    """
+    Please pass in the name returned by parseImgName
+    """
+    return str(Path(__file__).parent.as_posix()) + "/img/" + imgName
+
+
 @login_manager.user_loader
 def user_loader(email):
     # print("user_loader")
     users = getUserList()
-    if not (email) or email not in str(users):
+    if not email or email not in str(users):
         return
     user = User()
     user.id = email
@@ -262,10 +269,10 @@ def download():
     image_url = request.args.get('url')
     img_data = requests.get(image_url).content
     # sometimes open with relative path doesn't work
-    img_name = str(Path(__file__).parent.as_posix()) + "/img/" + parseImgName(image_url)
-    with open(f'{img_name}', 'wb+') as handler:
+    img_path = getImgPathFromName(parseImgName(image_url))
+    with open(f'{img_path}', 'wb+') as handler:
         handler.write(img_data)
-    return redirect(url_for('testimg', path=img_name))
+    return redirect(url_for('testimg', path=img_path))
 
 
 if __name__ == '__main__':
