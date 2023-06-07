@@ -2,9 +2,17 @@ CREATE DATABASE IF NOT EXISTS CS411;
 USE CS411;
 CREATE TABLE IF NOT EXISTS Users(
 	email VARCHAR(30) PRIMARY KEY,
-    username VARCHAR(255),
     password VARCHAR(255)
 );
+CREATE TABLE IF NOT EXISTS History(
+	hid INTEGER PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(30),
+    quote VARCHAR(255),
+    imgpath VARCHAR(255),
+    FOREIGN KEY (email) references Users(email)
+);
+SELECT * FROM HISTORY;
+SELECT * FROM Users;
 INSERT INTO Users(email) VALUES("zhuceyezi@gmail.com");
 INSERT INTO Users(email) VALUES("lianghan@bu.edu");
 INSERT INTO Users(email) VALUES("maxgspan@bu.edu");

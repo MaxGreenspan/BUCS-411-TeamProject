@@ -8,7 +8,7 @@ from flask_login import (
     login_user,
     logout_user, UserMixin,
 )
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from authlib.integrations.flask_client import OAuth
 import requests
 # mysql
@@ -29,6 +29,9 @@ with open("secrets/google_secret") as f:
 
 with open("secrets/chatgpt_api_key") as f:
     openai.api_key = f.readline()
+
+if not os.path.exists("./img"):
+    os.mkdir('img')
 
 mysql = MySQL()
 app = Flask(__name__)
@@ -249,8 +252,8 @@ def testprompt():
 def testimg():
     path = request.args.get('path')
     # https://stackoverflow.com/questions/7389567/output-images-to-html-using-python
-    data_uri = base64.b64encode(open(f'{path}', 'rb').read()).decode('utf-8')
-    img = '<img src="data:image/png;base64,{0}">'.format(data_uri)
+    data = base64.b64encode(open(f'{path}', 'rb').read()).decode('utf-8')
+    img = f'<img src="data:image/png;base64,{data}">'
     return img
 
 
@@ -258,10 +261,10 @@ def testimg():
 def download():
     image_url = request.args.get('url')
     img_data = requests.get(image_url).content
-    img_name = Path(__file__).parent + "/img" + parseImgName(image_url)
-    with open(f'{img_name}', 'wb') as handler:
+    # sometimes open with relative path doesn't work
+    img_name = str(Path(__file__).parent.as_posix()) + "/img/" + parseImgName(image_url)
+    with open(f'{img_name}', 'wb+') as handler:
         handler.write(img_data)
-
     return redirect(url_for('testimg', path=img_name))
 
 
