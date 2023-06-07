@@ -1,0 +1,3 @@
+The user wants to register, but the email is already registered.
+The user sees a text on top of the register page, that reminds of the user that the email is already registered.
+The user can either cancel or login. The after story refers to stories above.
