@@ -1,4 +1,4 @@
 A user wants to save an image that is generated.
 The user first normally generate a quote and image based on story_1.
-Then, the user sees a "view image" button. The user clicks it, and sees a new link with only the image in it.
+Then, the user sees a "view image" button on the bottom of the generated quote. The user clicks it, and sees a new link with only the image in it.
 The user right click on the image, and saves it.

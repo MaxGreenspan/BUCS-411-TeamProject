@@ -163,7 +163,7 @@ def user_loader(email):
 @app.route('/')
 def frontPage():
     if request.args.get('test') == 'True':
-        return render_template('frontend.html')
+        return render_template('frontend.html', message="This is a test message")
     elif not current_user.is_authenticated:
         return f"Hello!"
     return f"Hello, you are logged in as {current_user.id}"

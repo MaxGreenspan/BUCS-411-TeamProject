@@ -1,6 +1,6 @@
 A user wants to find a previously generated quote or image.
-The user logs into about website, and click the history button.
+The user logs into the website, and click the history button on the top right.
 Then, it shows a list of history.
 The user sees the history id and the keyword that is used as well as the date it is generated, and then realized one history is of interest.
-The user clicks the "view" button to check the details.
+The user clicks the "view" button on the right to check the details.
 The quote and image shows just like a result of a new search.
