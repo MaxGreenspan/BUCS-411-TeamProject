@@ -103,7 +103,7 @@ def getquote(keyword):
 
     if len(message.split()) > 1:
         print("Only a single word is allowed!")
-        return -1
+        return "Only a single word is allowed!"
 
     if message:
         messages.append(
@@ -115,7 +115,7 @@ def getquote(keyword):
     reply = chat.choices[0].message.content
     if reply == "idk":
         print("ChatGPT cannot understand your input!")
-        return -1
+        return "ChatGPT cannot understand your input!"
     # print(f"ChatGPT: {reply}")
     messages.append({"role": "assistant", "content": reply})
 
@@ -209,6 +209,8 @@ def login(method):
             if c.fetchone() is not None:
                 return f"Wrong Username or password!"
             return f"Not registered yet!"
+    elif method == 'Username' and request.method == 'GET':
+        return render_template('login.html')
 
 
 @app.route('/register', methods=['POST'])
