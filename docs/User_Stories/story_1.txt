@@ -1,0 +1,6 @@
+When everything is good:
+A user opens our web app, and that user will be able to see a search bar.
+The user types one keyword, and then the user will see a quote related with this keyword.
+Also, the user will see a related image.
+The use will be able to download the image as well.
+
