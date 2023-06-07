@@ -186,8 +186,9 @@ def logout():
     return redirect(url_for('hello_world'))
 
 
-@app.route('/login/<method>', methods=['GET', 'POST'])
-def login(method):
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    method = request.args.get('method')
     if method == 'Google' and request.method == 'GET':
         google = oauth.create_client('google')  # create the google oauth client
         redirect_uri = url_for('authorize_google', _external=True)
@@ -213,17 +214,20 @@ def login(method):
         return render_template('login.html')
 
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    c = conn.cursor()
-    email = request.form.get('email')
-    password = request.form.get('password')
-    if not isRegistered(email):
-        c.execute(f"INSERT INTO Users VALUES('{email}','{password}')")
-        conn.commit()
-        return f"Successfully registered {email} with pw:{password}"
-    else:
-        return f"Email {email} is already registered!"
+    if request.method == 'POST':
+        c = conn.cursor()
+        email = request.form.get('email')
+        password = request.form.get('password')
+        if not isRegistered(email):
+            c.execute(f"INSERT INTO Users VALUES('{email}','{password}')")
+            conn.commit()
+            return redirect('login', method='Username', message=f"Successfully registered {email}!")
+        else:
+            return render_template('register.html', message=f"Email {email} is already registered!")
+    elif request.method == 'GET':
+        return render_template('register.html')
 
 
 @app.route('/authorize_google')
@@ -275,6 +279,11 @@ def download():
     with open(f'{img_path}', 'wb+') as handler:
         handler.write(img_data)
     return redirect(url_for('testimg', path=img_path))
+
+
+@app.route('/teststr')
+def teststr():
+    return 'test string!'
 
 
 if __name__ == '__main__':
