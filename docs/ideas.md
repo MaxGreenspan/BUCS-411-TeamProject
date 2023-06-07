@@ -14,6 +14,7 @@ The resulting combinations can serve as a source of inspiration, motivation, or 
 The chrome default page is not doing too many things. If we can have a toolbox that have everything in handy,It would be
 great.
 If we have this thing, we can save a lot of time by going to this app as the only place to start working for today.
+If possible, the user can even customize the dashboard!
 
 3. A receipe generator:
 
