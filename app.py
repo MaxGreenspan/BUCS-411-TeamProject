@@ -39,7 +39,7 @@ app = Flask(__name__)
 # These will need to be changed according to your credentials.
 # about things that needs to be changed, see comments.
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'zhuceyezi'  # NOTE:change this to your mysql password.
+app.config['MYSQL_DATABASE_PASSWORD'] = 'BostonU#3087'  # NOTE:change this to your mysql password.
 app.config['MYSQL_DATABASE_DB'] = 'CS411'  # Also change this if your database name is not CS411.
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -141,6 +141,18 @@ def getprompt(quote):
 
     return reply
 
+def getimage(script):
+    PROMPT = script
+
+    response = openai.Image.create(
+        prompt=PROMPT,
+        n=1,
+        size="256x256",
+    )
+
+    reply = response["data"][0]["url"]
+
+    return reply
 
 def getImgPathFromName(imgName):
     """
@@ -254,6 +266,13 @@ def testprompt():
     prompt = getprompt(quote)
     return prompt
 
+@app.route('/testopenai')
+def testOpenAIImage():
+    keyword = request.args.get('keyword')
+    quote = getquote(keyword)
+    script = getprompt(quote)
+    image = getimage(script)
+    return image
 
 @app.route('/testimg')
 def testimg():
