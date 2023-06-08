@@ -1,5 +1,5 @@
 The user wants to log in, but with an incorrect password.
 The user will be redirected to the same login page, with a text on top showing "Email/Password not correct".
 Or if the email is not registered, it will say so.
-They user then either register or change to a correct email and password combination.
+The user will then either register or change to a correct email and password combination.
 Then refer to previous stories about what the user can do.
