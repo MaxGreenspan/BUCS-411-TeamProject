@@ -10,7 +10,7 @@ Qirong Zhang - vasily53@bu.edu
 
 Stefan Pretorius - stefanjp@bu.edu
 
-**Project Title: Inspirational Quote Generator and Visualization Tool**
+**Project Title: Quotidian—Inspirational Quote Generator and Visualization Tool**
 
 *Description:*
 
