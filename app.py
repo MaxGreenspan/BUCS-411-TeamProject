@@ -18,6 +18,7 @@ import os
 import base64
 import time
 import openai
+import datetime
 
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 google_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
@@ -88,11 +89,33 @@ def parseImgName(url):
     return url.split('/')[-1]
 
 
+def getCurrentDate():
+    return datetime.datetime.fromtimestamp(
+        time.time()).strftime('%Y-%m-%d')
+
+
 def isRegistered(email):
     c = conn.cursor()
     c.execute(f"SELECT email FROM Users WHERE Users.email='{email}'")
     result = c.fetchone()
     return result is not None
+
+
+def getImgDataFromName(imgname):
+    path = getImgPathFromName(imgname)
+    # https://stackoverflow.com/questions/7389567/output-images-to-html-using-python
+    data = base64.b64encode(open(f'{path}', 'rb').read()).decode('utf-8')
+    return data
+
+
+def getImgDataFromUrl(image_url):
+    img_data = requests.get(image_url).content
+    # sometimes open with relative path doesn't work
+    img_path = getImgPathFromName(parseImgName(image_url))
+    with open(f'{img_path}', 'wb+') as handler:
+        handler.write(img_data)
+    imgname = parseImgName(image_url)
+    return getImgDataFromName(imgname)
 
 
 def getquote(keyword):
@@ -163,7 +186,9 @@ def user_loader(email):
 @app.route('/')
 def frontPage():
     if request.args.get('test') == 'True':
-        return render_template('frontend.html', message="This is a test message")
+        message = request.args.get('message')
+        imgname = request.args.get('imgname')
+        return render_template('frontend.html', message=message, getdata=getImgDataFromName, imgname=imgname)
     elif not current_user.is_authenticated:
         return f"Hello!"
     return f"Hello, you are logged in as {current_user.id}"
@@ -192,7 +217,8 @@ def login():
     if method == 'Google' and request.method == 'GET':
         google = oauth.create_client('google')  # create the google oauth client
         redirect_uri = url_for('authorize_google', _external=True)
-        return google.authorize_redirect(redirect_uri)
+        destination = google.authorize_redirect(redirect_uri)
+        return destination
     elif method == 'Username' and request.method == 'POST':
         redirect_uri = url_for('frontPage')
         email = request.form.get('email')
@@ -281,9 +307,56 @@ def download():
     return redirect(url_for('testimg', path=img_path))
 
 
-@app.route('/teststr')
-def teststr():
-    return 'test string!'
+@app.route('/history')
+@login_required
+def load_history():
+    email = current_user.id
+    c = conn.cursor()
+    c.execute(f"SELECT * FROM history WHERE email='{email}'")
+    result = c.fetchall()
+    final = []
+    for t in result:
+        d = {'hid': t[0],
+             'email': t[1],
+             'quote': t[2],
+             'imgname': t[3],
+             'date': t[4],
+             'keyword': t[5],
+             }
+        final.append(d)
+    return render_template('history.html', data=final)
+
+
+@app.route('/generate', methods=['POST'])
+def generate():
+    keyword = request.form.get('keyword')
+    if current_user.is_authenticated:
+        email = current_user.id
+        quote = 'This is chatgpt response'
+        if not (quote.__contains__('invalid') or quote.__contains__('Sorry') or quote.__contains__("cannot")):
+            prompt = 'prompt'
+            imgUrl = 'https://cdn-prod.medicalnewstoday.com/content/images/articles/319/319899/glass-half-empty-and-half-full.jpg'
+            imgname = parseImgName(imgUrl)
+            c = conn.cursor()
+            c.execute(
+                f"INSERT INTO history(email, quote, imgname,keyword,date) VALUES ('{email}','{quote}','{imgname}','{keyword}','{getCurrentDate()}')")
+            conn.commit()
+            return redirect(url_for('frontPage', message='Generated!', test=True, imgname=imgname))
+    else:
+        quote = 'This is chatgpt response'
+        if not (quote.__contains__('invalid') or quote.__contains__('Sorry') or quote.__contains__("cannot")):
+            prompt = 'prompt'
+            imgUrl = 'https://cdn-prod.medicalnewstoday.com/content/images/articles/319/319899/glass-half-empty-and-half-full.jpg'
+            imgname = parseImgName(imgUrl)
+            return redirect(url_for('frontPage', message='Generated!', test=True, imgname=imgname))
+        return redirect(url_for('frontPage', quote=quote, test=True))
+
+
+@app.route('/view')
+def view():
+    imgname = request.args.get('imgname')
+    message = request.args.get('message')
+    return redirect(url_for('frontPage', message=message, imgname=imgname, test=True))
 
 
 if __name__ == '__main__':
