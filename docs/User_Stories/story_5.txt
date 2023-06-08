@@ -1,0 +1,7 @@
+A user wants to register. The user first clicks login, then clicks the "register" button on the bottom of the login page, and is directed to a register page.
+The top left says register. Below are two input boxes.
+The user enters the email and password in the two boxes.
+the system successfully registers the account.
+The user is redirected to the login page.
+After that, the user enters the email and password in the two boxes described above.
+The user gets logged in normally, and can do things refer to stories above.

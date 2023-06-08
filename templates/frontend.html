@@ -16,6 +16,10 @@
     </style>
 </head>
 <body>
+{% if message %}
+    {% set m = message %}
+    <h2>{{ m }}</h2>
+{% endif %}
 <div class="container">
     <input type="text" id="keywordInput" placeholder="Enter your keywords">
     <button onclick="generateQuote()">Generate</button>
