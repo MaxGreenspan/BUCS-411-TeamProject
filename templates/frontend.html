@@ -28,8 +28,8 @@
         <div id="imageContainer"></div>
     </div>
 </form>
-{% if imgPath %}
-    <img src="data:image/png;base64,{{ getdata(imgPath) }}" alt="image">
+{% if imgName %}
+    <img src="../static/{{ imgName }}" alt="image">
 {% endif %}
 
 <script>
