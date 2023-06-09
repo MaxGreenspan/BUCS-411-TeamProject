@@ -7,10 +7,11 @@ CREATE TABLE IF NOT EXISTS Users
 );
 CREATE TABLE IF NOT EXISTS History
 (
-    hid     INTEGER PRIMARY KEY AUTO_INCREMENT,
-    email   VARCHAR(30),
-    quote   VARCHAR(255),
-    imgname VARCHAR(255),
+    hid         INTEGER PRIMARY KEY AUTO_INCREMENT,
+    email       VARCHAR(30),
+    quote       VARCHAR(255),
+    imgname     VARCHAR(255),
+    description VARCHAR(255),
     FOREIGN KEY (email) references Users (email)
 );
 SELECT *
