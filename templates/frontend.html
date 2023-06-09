@@ -3,6 +3,12 @@
 <head>
     <title>Quote Generator</title>
     <script>
+        {% if redirectFromSave %}
+            window.onload = function () {
+                alert("Saved to history!"); // Replace with your desired alert message
+            };
+        {% endif %}
+
         function copyToClipboard() {
             var copyText = document.getElementById("textToCopy").value;
 
@@ -107,6 +113,16 @@
             <a href="../static/{{ imgName }}" download="{{ imgName }}">
                 <button class="styled-button">Download Image</button>
             </a>
+        {% endif %}
+    </div>
+    <div>
+        {% if message and imgName %}
+            <form action="/saveToHistory" method="post">
+                <input type="text" name="quote" id="quote" value="{{ message }}" style="display: none;">
+                <input type="text" name="imgName" id="imgName" value="{{ imgName }}" style="display: none;">>
+                <input type="text" name="description" id="description" placeholder="Enter your description">
+                <button type="submit">Save to history</button>
+            </form>
         {% endif %}
     </div>
 </div>

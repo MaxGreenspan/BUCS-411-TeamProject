@@ -198,8 +198,9 @@ def frontPage():
         message = request.args.get('message')
         imgPath = request.args.get('imgPath')
         imgName = request.args.get('imgName')
+        redirectFromSave = request.args.get('redirectFromSave')
         return render_template('frontend.html', message=message, imgPath=imgPath,
-                               imgName=imgName)
+                               imgName=imgName, redirectFromSave=redirectFromSave)
     elif not current_user.is_authenticated:
         return f"Hello!"
     return f"Hello, you are logged in as {current_user.id}"
@@ -225,6 +226,7 @@ def logout():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     method = request.args.get('method')
+    message = request.args.get('message')
     if method == 'Google' and request.method == 'GET':
         google = oauth.create_client('google')  # create the google oauth client
         redirect_uri = url_for('authorize_google', _external=True)
@@ -248,7 +250,7 @@ def login():
                 return f"Wrong Username or password!"
             return f"Not registered yet!"
     elif method == 'Username' and request.method == 'GET':
-        return render_template('login.html')
+        return render_template('login.html', message=message)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -260,7 +262,7 @@ def register():
         if not isRegistered(email):
             c.execute(f"INSERT INTO Users VALUES('{email}','{password}')")
             conn.commit()
-            return redirect('login', method='Username', message=f"Successfully registered {email}!")
+            return redirect(url_for('login', message=f"Successfully registered {email}!", method="Username"))
         else:
             return render_template('register.html', message=f"Email {email} is already registered!")
     elif request.method == 'GET':
@@ -330,13 +332,12 @@ def load_history():
     result = c.fetchall()
     final = []
     for t in result:
-        d = {'hid': t[0],
-             'email': t[1],
-             'quote': t[2],
-             'imgname': t[3],
-             'date': t[4],
-             'keyword': t[5],
-             }
+        d = {
+            'quote': t[2],
+            'imgname': t[3],
+            'date': t[4],
+            'description': t[5],
+        }
         final.append(d)
     return render_template('history.html', data=final)
 
@@ -344,30 +345,17 @@ def load_history():
 @app.route('/generate', methods=['POST'])
 def generate():
     keyword = request.form.get('keyword')
-    if current_user.is_authenticated:
-        email = current_user.id
-        quote = getquote(keyword)
-        if not (quote.__contains__('invalid') or quote.__contains__('Sorry') or quote.__contains__("cannot")):
-            prompt = 'prompt'
-            imgUrl = 'https://cdn-prod.medicalnewstoday.com/content/images/articles/319/319899/glass-half-empty-and-half-full.jpg'
-            imgName = getimage()
-            # c = conn.cursor()
-            # c.execute(
-            #     f"INSERT INTO history(email, quote, imgname,date) VALUES ('{email}','{quote}','{imgname}','{getCurrentDate()}')")
-            # conn.commit()
-            return redirect(url_for('frontPage', message='Generated!', test=True, imgName=imgName))
-    else:
-        quote = getquote(keyword)[1:-1]
-        print(quote)
-        # quote = "Even on the darkest days, the sun is just behind the clouds."
-        if not (quote.__contains__('invalid') or quote.__contains__('Sorry') or quote.__contains__("cannot")):
-            prompt = getprompt(quote)
-            print(prompt)
-            imgUrl = 'https://cdn-prod.medicalnewstoday.com/content/images/articles/319/319899/glass-half-empty-and-half-full.jpg'
-            imgName = getimage(prompt)
-            # imgName = "glass-half-empty-and-half-full.jpg"
-            return redirect(url_for('frontPage', message=quote, test=True, imgName=imgName))
-        return redirect(url_for('frontPage', message=quote, test=True))
+    quote = getquote(keyword)[1:-1]
+    print(quote)
+    # quote = "(Test)Even on the darkest days, the sun is just behind the clouds."
+    if not (quote.__contains__('invalid') or quote.__contains__('Sorry') or quote.__contains__("cannot")):
+        prompt = getprompt(quote)
+        print(prompt)
+        imgUrl = 'https://cdn-prod.medicalnewstoday.com/content/images/articles/319/319899/glass-half-empty-and-half-full.jpg'
+        imgName = getimage(prompt)
+        # imgName = "glass-half-empty-and-half-full.jpg"
+        return redirect(url_for('frontPage', message=quote, test=True, imgName=imgName))
+    return redirect(url_for('frontPage', message=quote, test=True))
 
 
 @app.route('/view')
@@ -379,15 +367,16 @@ def view():
 
 @app.route('/saveToHistory', methods=['POST'])
 @login_required
-def saveToHistory(description, quote, imgname):
+def saveToHistory():
     description = request.form.get('description')
     quote = request.form.get('quote')
-    imgname = request.form.get('imgname')
+    imgName = request.form.get('imgName')
     c = conn.cursor()
     c.execute(
-        f"INSERT INTO history(email, quote, imgname,description,date) VALUES\
-             ('{current_user.id}','{quote}','{imgname}','{description}','{getCurrentDate()}')")
+        "INSERT INTO history(email, quote, imgname,description,date) \
+        VALUES(%s,%s,%s,%s,%s)", (current_user.id, quote, imgName, description, getCurrentDate()))
     conn.commit()
+    return redirect(url_for("frontPage", imgName=imgName, message=quote, redirectFromSave=True, test=True))
 
 
 def encodeimage(script):
