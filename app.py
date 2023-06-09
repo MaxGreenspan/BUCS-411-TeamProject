@@ -206,7 +206,7 @@ def frontPage():
         message = request.args.get('message')
         imgPath = request.args.get('imgPath')
         imgName = request.args.get('imgName')
-        return render_template('frontend.html', message=message, getdata=getImgDataFromPath, imgPath=imgPath,
+        return render_template('frontend.html', message=message, imgPath=imgPath,
                                imgName=imgName)
     elif not current_user.is_authenticated:
         return f"Hello!"
@@ -358,12 +358,12 @@ def generate():
         if not (quote.__contains__('invalid') or quote.__contains__('Sorry') or quote.__contains__("cannot")):
             prompt = 'prompt'
             imgUrl = 'https://cdn-prod.medicalnewstoday.com/content/images/articles/319/319899/glass-half-empty-and-half-full.jpg'
-            imgPath = getimage()
+            imgName = getimage()
             # c = conn.cursor()
             # c.execute(
             #     f"INSERT INTO history(email, quote, imgname,date) VALUES ('{email}','{quote}','{imgname}','{getCurrentDate()}')")
             # conn.commit()
-            return redirect(url_for('frontPage', message='Generated!', test=True, imgPath=imgPath))
+            return redirect(url_for('frontPage', message='Generated!', test=True, imgName=imgName))
     else:
         quote = getquote(keyword)
         if not (quote.__contains__('invalid') or quote.__contains__('Sorry') or quote.__contains__("cannot")):
