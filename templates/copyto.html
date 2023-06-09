@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Copy to Clipboard</title>
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("textToCopy").value;
+
+            navigator.clipboard.writeText(copyText)
+                .then(function () {
+                    alert("Text copied to clipboard!");
+                })
+                .catch(function (error) {
+                    alert("Error copying text to clipboard: " + error);
+                });
+        }
+    </script>
+</head>
+<body>
+<input type="text" id="textToCopy" value="Hello, World!" style="display: none;">
+<button onclick="copyToClipboard()">Copy Text</button>
+</body>
+</html>
