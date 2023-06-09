@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS History
     quote       VARCHAR(255),
     imgname     VARCHAR(255),
     description VARCHAR(255),
+    date        date,
     FOREIGN KEY (email) references Users (email)
 );
 SELECT *
