@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quote Generator</title>
+    <style>
+        body {
+            background-image: url('../static/background.png');
+        }
+
+        .header {
+            position: absolute;
+        {#size: large;#} top: 10px;
+            left: 0;
+            cursor: auto;
+            z-index: 9999; /* Adjust the value as needed */
+            display: flex;
+            color: black;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+            font-family: 'Franklin Gothic Medium';
+        }
+
+        .header a {
+            margin-left: 10px;
+            color: black;
+            text-decoration: none;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            justify-content: center;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .input-container input {
+            padding: 10px;
+            font-size: 18px;
+        }
+
+        .input-container button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #000000;
+            color: white;
+            border: none;
+            cursor: crosshair;
+        }
+
+        #quoteContainer {
+            margin-bottom: 20px;
+        }
+
+        #imageContainer img {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <a href="#">Login / Register</a>
+    <a href="#">Logout</a>
+    <a href="#">History</a>
+</div>
+
+<div class="container">
+    <div class="input-container">
+        <form action="/generate" method="post">
+            <input type="text" name="keyword" id="keyword" placeholder="Enter your keywords">
+            <button type="submit">Generate</button>
+        </form>
+    </div>
+    <div id="quoteContainer">
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+    </div>
+    <div id="imageContainer">
+        {% if imgName %}
+            <img src="../static/{{ imgName }}" alt="Generated Image">
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>
