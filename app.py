@@ -19,6 +19,8 @@ import base64
 import time
 import openai
 import datetime
+import json
+from util import *
 
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 google_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
@@ -44,7 +46,6 @@ app.config['MYSQL_DATABASE_PASSWORD'] = 'zhuceyezi'  # NOTE:change this to your 
 app.config['MYSQL_DATABASE_DB'] = 'CS411'  # Also change this if your database name is not CS411.
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
-
 # session config
 
 # We need to decide on a app secret key. Probably someone should generate a random string. But it should be fine for
@@ -74,7 +75,6 @@ conn = mysql.connect()
 
 # cursor = conn.cursor()
 
-
 class User(UserMixin):
     pass
 
@@ -87,6 +87,18 @@ def getUserList():
 
 def parseImgName(url):
     return url.split('/')[-1]
+
+
+def saveToHistory(description, quote, imgname):
+    c = conn.cursor()
+    c.execute(
+        f"INSERT INTO history(email, quote, imgname,description,date) VALUES\
+         ('{current_user.id}','{quote}','{imgname}','{description}','{getCurrentDate()}')")
+    conn.commit()
+
+
+def parseOpenAIImgName(url):
+    pass
 
 
 def getCurrentDate():
@@ -172,6 +184,11 @@ def getImgPathFromName(imgName):
     return str(Path(__file__).parent.as_posix()) + "/img/" + imgName
 
 
+def getImgDataFromPath(path):
+    data = base64.b64encode(open(f'{path}', 'rb').read()).decode('utf-8')
+    return data
+
+
 @login_manager.user_loader
 def user_loader(email):
     # print("user_loader")
@@ -187,8 +204,8 @@ def user_loader(email):
 def frontPage():
     if request.args.get('test') == 'True':
         message = request.args.get('message')
-        imgname = request.args.get('imgname')
-        return render_template('frontend.html', message=message, getdata=getImgDataFromName, imgname=imgname)
+        imgPath = request.args.get('imgPath')
+        return render_template('frontend.html', message=message, getdata=getImgDataFromPath, imgPath=imgPath)
     elif not current_user.is_authenticated:
         return f"Hello!"
     return f"Hello, you are logged in as {current_user.id}"
@@ -287,13 +304,11 @@ def testprompt():
     return prompt
 
 
-@app.route('/testimg')
-def testimg():
-    path = request.args.get('path')
+@app.route('/img/<name>')
+def testimg(name):
     # https://stackoverflow.com/questions/7389567/output-images-to-html-using-python
-    data = base64.b64encode(open(f'{path}', 'rb').read()).decode('utf-8')
-    img = f'<img src="data:image/png;base64,{data}">'
-    return img
+    # img = f'<img src="data:image/png;base64,{data}">'
+    return render_template('testimg.html', name=name, getImgDataFromName=getImgDataFromName)
 
 
 @app.route('/download')
@@ -301,10 +316,15 @@ def download():
     image_url = request.args.get('url')
     img_data = requests.get(image_url).content
     # sometimes open with relative path doesn't work
-    img_path = getImgPathFromName(parseImgName(image_url))
+    img_path = getImgPathFromName("test.png")
     with open(f'{img_path}', 'wb+') as handler:
         handler.write(img_data)
-    return redirect(url_for('testimg', path=img_path))
+    return redirect(url_for('testimg', name="test.png"))
+
+
+@app.route('/downloadOpenai')
+def downloadOpenai():
+    image_url = request.args.get('url')
 
 
 @app.route('/history')
@@ -332,23 +352,24 @@ def generate():
     keyword = request.form.get('keyword')
     if current_user.is_authenticated:
         email = current_user.id
-        quote = 'This is chatgpt response'
+        quote = getquote(keyword)
         if not (quote.__contains__('invalid') or quote.__contains__('Sorry') or quote.__contains__("cannot")):
             prompt = 'prompt'
             imgUrl = 'https://cdn-prod.medicalnewstoday.com/content/images/articles/319/319899/glass-half-empty-and-half-full.jpg'
-            imgname = parseImgName(imgUrl)
-            c = conn.cursor()
-            c.execute(
-                f"INSERT INTO history(email, quote, imgname,keyword,date) VALUES ('{email}','{quote}','{imgname}','{keyword}','{getCurrentDate()}')")
-            conn.commit()
-            return redirect(url_for('frontPage', message='Generated!', test=True, imgname=imgname))
+            imgPath = getimage()
+            # c = conn.cursor()
+            # c.execute(
+            #     f"INSERT INTO history(email, quote, imgname,date) VALUES ('{email}','{quote}','{imgname}','{getCurrentDate()}')")
+            # conn.commit()
+            return redirect(url_for('frontPage', message='Generated!', test=True, imgPath=imgPath))
     else:
-        quote = 'This is chatgpt response'
+        quote = getquote(keyword)
         if not (quote.__contains__('invalid') or quote.__contains__('Sorry') or quote.__contains__("cannot")):
-            prompt = 'prompt'
+            prompt = getprompt(quote)
+            print(prompt)
             imgUrl = 'https://cdn-prod.medicalnewstoday.com/content/images/articles/319/319899/glass-half-empty-and-half-full.jpg'
-            imgname = parseImgName(imgUrl)
-            return redirect(url_for('frontPage', message='Generated!', test=True, imgname=imgname))
+            imgPath = getimage(prompt)
+            return redirect(url_for('frontPage', message=quote, test=True, imgPath=imgPath))
         return redirect(url_for('frontPage', quote=quote, test=True))
 
 
@@ -357,6 +378,49 @@ def view():
     imgname = request.args.get('imgname')
     message = request.args.get('message')
     return redirect(url_for('frontPage', message=message, imgname=imgname, test=True))
+
+
+def encodeimage(script):
+    PROMPT = script
+    DATA_DIR = Path.cwd() / "jsons"
+
+    DATA_DIR.mkdir(exist_ok=True)
+
+    response = openai.Image.create(
+        prompt=PROMPT,
+        n=1,
+        size="256x256",
+        response_format="b64_json",
+    )
+
+    # This is where the filename is generated
+    file_name = DATA_DIR / f"{PROMPT[:5]}-{response['created']}.json"
+
+    with open(file_name, mode="w", encoding="utf-8") as file:
+        json.dump(response, file)
+
+    return file_name
+
+
+def getimage(prompt):
+    # DATA_DIR stores the image in a file called "responses"
+    DATA_DIR = Path.cwd() / "jsons"
+    # The filename is "Write-1686233086.json", generated by getimage() function
+    JSON_FILE = DATA_DIR / encodeimage(prompt)
+    # IMAGE_DIR stores the image in a file called "images" in png format
+    IMAGE_DIR = Path.cwd() / "img"
+
+    IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+
+    with open(JSON_FILE, mode="r", encoding="utf-8") as file:
+        response = json.load(file)
+
+    for index, image_dict in enumerate(response["data"]):
+        image_data = base64.b64decode(image_dict["b64_json"])
+        image_file = IMAGE_DIR / f"{JSON_FILE.stem}-{index}.png"
+        with open(image_file, mode="wb") as png:
+            png.write(image_data)
+    return image_file
 
 
 if __name__ == '__main__':

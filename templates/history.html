@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Table Template</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        h3 {
+            white-space: nowrap; /* Prevent line breaks for the heading */
+            margin: 0; /* Remove any margin */
+        }
+
+        header {
+            background-color: #ddd; /* Gray bar color */
+            padding: 10px;
+            height: 40px; /* Fixed height for the gray bar */
+            overflow: hidden; /* Hide any overflow content */
+            display: flex; /* Enable flexbox layout */
+            justify-content: space-between; /* Spread items horizontally */
+            align-items: center; /* Vertically center items */
+        }
+
+        .keyword-column {
+            width: 60%;
+            padding-left: 20px;
+        }
+
+        body {
+            background-color: #eaf7ea; /* Light green background */
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <span>Left Text</span>
+    </div>
+    <h3>My Table</h3>
+    <div>
+        <span>Right Text</span>
+    </div>
+</header>
+<table>
+    <thead>
+    <tr>
+        <th>hid</th>
+        <th>date</th>
+        <th>keyword</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entry in data %}
+        <tr>
+            <td>{{ entry['hid'] }}</td>
+            <td>{{ entry['date'] }}</td>
+            <td>{{ entry['keyword'] }}</td>
+            <td>
+                <a href='/view?imgname={{ entry['imgname'] }}&message={{ entry['quote'] }}'>view</a>
+            </td>
+        </tr>
+    {% endfor %}
+    <!-- Add more rows as needed -->
+    </tbody>
+</table>
+</body>
+</html>
