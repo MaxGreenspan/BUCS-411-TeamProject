@@ -89,14 +89,6 @@ def parseImgName(url):
     return url.split('/')[-1]
 
 
-def saveToHistory(description, quote, imgname):
-    c = conn.cursor()
-    c.execute(
-        f"INSERT INTO history(email, quote, imgname,description,date) VALUES\
-         ('{current_user.id}','{quote}','{imgname}','{description}','{getCurrentDate()}')")
-    conn.commit()
-
-
 def parseOpenAIImgName(url):
     pass
 
@@ -365,12 +357,15 @@ def generate():
             # conn.commit()
             return redirect(url_for('frontPage', message='Generated!', test=True, imgName=imgName))
     else:
-        quote = getquote(keyword)
+        quote = getquote(keyword)[1:-1]
+        print(quote)
+        # quote = "Even on the darkest days, the sun is just behind the clouds."
         if not (quote.__contains__('invalid') or quote.__contains__('Sorry') or quote.__contains__("cannot")):
             prompt = getprompt(quote)
             print(prompt)
             imgUrl = 'https://cdn-prod.medicalnewstoday.com/content/images/articles/319/319899/glass-half-empty-and-half-full.jpg'
             imgName = getimage(prompt)
+            # imgName = "glass-half-empty-and-half-full.jpg"
             return redirect(url_for('frontPage', message=quote, test=True, imgName=imgName))
         return redirect(url_for('frontPage', message=quote, test=True))
 
@@ -380,6 +375,19 @@ def view():
     imgname = request.args.get('imgname')
     message = request.args.get('message')
     return redirect(url_for('frontPage', message=message, imgname=imgname, test=True))
+
+
+@app.route('/saveToHistory', methods=['POST'])
+@login_required
+def saveToHistory(description, quote, imgname):
+    description = request.form.get('description')
+    quote = request.form.get('quote')
+    imgname = request.form.get('imgname')
+    c = conn.cursor()
+    c.execute(
+        f"INSERT INTO history(email, quote, imgname,description,date) VALUES\
+             ('{current_user.id}','{quote}','{imgname}','{description}','{getCurrentDate()}')")
+    conn.commit()
 
 
 def encodeimage(script):
@@ -423,11 +431,6 @@ def getimage(prompt):
         with open(image_file, mode="wb") as png:
             png.write(image_data)
     return f"{JSON_FILE.stem}-{index}.png"
-
-
-@app.route("/test")
-def test():
-    return render_template("frontend1.html", imgPath="test")
 
 
 if __name__ == '__main__':
