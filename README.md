@@ -1,5 +1,5 @@
 # BUCS-411-TeamProject
-
+# Quotidian
 Team Members:
 
 Max Greenspan - maxgspan@bu.edu
@@ -10,7 +10,7 @@ Qirong Zhang - vasily53@bu.edu
 
 Stefan Pretorius - stefanjp@bu.edu
 
-**Project Title: Inspirational Quote Generator and Visualization Tool**
+**Project Title: Quotidian—Inspirational Quote Generator and Visualization Tool**
 
 *Description:*
 
