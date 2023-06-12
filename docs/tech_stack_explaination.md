@@ -9,7 +9,7 @@ We decided to choose python flask, because:
    Python flask has a module called flask-login. It can handle the user login easier and nicer. These are important features of our apps, and flask serves them just well.
  Also, python have flask-mysql, which makes CRUD from our database easier to implement.
  
- We chose relational because in the early design of the project, we thought we may use some join operation(retrieve history records based on user email). Also, data should be structured. It is hard to do join in NoSQL database,
+ We chose relational because in the early design of the project, we thought we may use some join operations. Also, data should be structured. It is hard to do join in NoSQL database,
  and it makes more sense for us to use a relational database if the data have to be structured.
  
 
