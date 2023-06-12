@@ -2,6 +2,18 @@
 <html>
 <head>
     <title>Table Template</title>
+    <script>
+        function copyToClipboard(copyText) {
+            navigator.clipboard.writeText(copyText)
+                .then(function () {
+                    console.log(copyText)
+                    alert("Text copied to clipboard!");
+                })
+                .catch(function (error) {
+                    alert("Error copying text to clipboard: " + error);
+                });
+        }
+    </script>
     <style>
         table {
             width: 100%;
@@ -57,7 +69,7 @@
 <table>
     <thead>
     <tr>
-        <th>hid</th>
+        <th>description</th>
         <th>date</th>
         <th>keyword</th>
         <th></th>
@@ -66,11 +78,19 @@
     <tbody>
     {% for entry in data %}
         <tr>
-            <td>{{ entry['hid'] }}</td>
+            <td>{{ entry['description'] }}</td>
             <td>{{ entry['date'] }}</td>
-            <td>{{ entry['keyword'] }}</td>
             <td>
-                <a href='/view?imgname={{ entry['imgname'] }}&message={{ entry['quote'] }}'>view</a>
+                {{ entry['quote'] }}
+                <input type="text" style="display: none;">
+                <button class="small-styled-button" onclick="copyToClipboard('{{ entry['quote'] }}')">Copy Quote
+                </button>
+            </td>
+            <td>
+                <img src="../static/{{ entry['imgname'] }}" alt="Generated Image" height="500" width="500">
+                <a href="../static/{{ entry['imgname'] }}" download="{{ entry['imgname'] }}">
+                    <button class="styled-button">Download Image</button>
+                </a>
             </td>
         </tr>
     {% endfor %}

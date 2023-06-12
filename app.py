@@ -128,10 +128,6 @@ def getquote(keyword):
 
     message = keyword
 
-    if len(message.split()) > 1:
-        print("Only a single word is allowed!")
-        return "Only a single word is allowed!"
-
     if message:
         messages.append(
             {"role": "user", "content": message},
@@ -140,13 +136,16 @@ def getquote(keyword):
             model="gpt-3.5-turbo", messages=messages
         )
     reply = chat.choices[0].message.content
-    if reply == "idk":
-        print("ChatGPT cannot understand your input!")
-        return "ChatGPT cannot understand your input!"
+    if reply.__contains__("idk") \
+            or reply.__contains__('invalid') \
+            or reply.__contains__('Sorry') \
+            or reply.__contains__("cannot"):
+        print("The service cannot understand your input!")
+        return "The service cannot understand your input!", False
     # print(f"ChatGPT: {reply}")
     messages.append({"role": "assistant", "content": reply})
 
-    return reply
+    return reply, True
 
 
 def getprompt(quote):
@@ -345,17 +344,18 @@ def load_history():
 @app.route('/generate', methods=['POST'])
 def generate():
     keyword = request.form.get('keyword')
-    quote = getquote(keyword)[1:-1]
+    quote, ok = getquote(keyword)
     print(quote)
     # quote = "(Test)Even on the darkest days, the sun is just behind the clouds."
-    if not (quote.__contains__('invalid') or quote.__contains__('Sorry') or quote.__contains__("cannot")):
+    if ok:
+        quote = quote[1:-1]
         prompt = getprompt(quote)
         print(prompt)
         imgUrl = 'https://cdn-prod.medicalnewstoday.com/content/images/articles/319/319899/glass-half-empty-and-half-full.jpg'
         imgName = getimage(prompt)
         # imgName = "glass-half-empty-and-half-full.jpg"
-        return redirect(url_for('frontPage', message=quote, test=True, imgName=imgName))
-    return redirect(url_for('frontPage', message=quote, test=True))
+        return redirect(url_for('frontPage', message=quote, test=True, imgName=imgName, ok=ok))
+    return redirect(url_for('frontPage', message=quote, test=True, ok=ok))
 
 
 @app.route('/view')
