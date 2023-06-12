@@ -1,2 +1,4 @@
 /secrets/
 /img/
+/static/*
+!/static/background.png
