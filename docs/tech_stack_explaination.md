@@ -8,10 +8,19 @@ We decided to choose python flask, because:
   Express doesn't have an official library for those apis.
    Python flask has a module called flask-login. It can handle the user login easier and nicer. These are important features of our apps, and flask serves them just well.
  Also, python have flask-mysql, which makes CRUD from our database easier to implement.
+ Also, for python, we first found the authlib package that can make oauth easier. Although passport is available on otherr languages too, combined with the above reasons we chose to do python.
+ 
+ For database:
+ 
  
  We chose relational because in the early design of the project, we thought we may use some join operations. Also, data should be structured since we are only storing a certain attributes and will not have different attributes for different record. It is hard to do join in NoSQL database,
  and it makes more sense for us to use a relational database if the data have to be structured.
  
+ 
+ For rendering front end:
+ 
+ 
  We decided to use the Jinja template python flask over react. First, it is enough for the complexity of our front end. Second, it is easier to do. Given the team members are busy in the summer, it makes more sense to use render_template from flask.
+ 
  
  We still have to learn some python flask and about templating html, but that seems doable given the time left for the project.
