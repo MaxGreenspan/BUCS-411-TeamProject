@@ -5,14 +5,13 @@ For the backend, we have considered the following two:
 
 We decided to choose python flask, because:
   The APIs we chose are chatgpt api and the openai DALL-E image generation api. They have a python library which makes api calls easier to make.
-  Express doesn't have an official library.
+  Express doesn't have an official library for those apis.
    Python flask has a module called flask-login. It can handle the user login easier and nicer. These are important features of our apps, and flask serves them just well.
  Also, python have flask-mysql, which makes CRUD from our database easier to implement.
  
- We chose relational because in the early design of the project, we thought we may use some join operations. Also, data should be structured. It is hard to do join in NoSQL database,
+ We chose relational because in the early design of the project, we thought we may use some join operations. Also, data should be structured since we are only storing a certain attributes and will not have different attributes for different record. It is hard to do join in NoSQL database,
  and it makes more sense for us to use a relational database if the data have to be structured.
  
-
- We decided to use the Jinja template python flask over react. First, it is enough for the complexity of our front end. Second, it is easier to do.
+ We decided to use the Jinja template python flask over react. First, it is enough for the complexity of our front end. Second, it is easier to do. Given the team members are busy in the summer, it makes more sense to use render_template from flask.
  
- We still have to learn some python flask, but that seems doable given the time left for the project.
+ We still have to learn some python flask and about templating html, but that seems doable given the time left for the project.
