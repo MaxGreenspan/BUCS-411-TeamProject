@@ -340,8 +340,8 @@ def load_history():
         d = {
             'quote': t[2],
             'imgname': t[3],
-            'date': t[4],
-            'description': t[5],
+            'date': t[5],
+            'description': t[4],
         }
         final.append(d)
     return render_template('history.html', data=final)
