@@ -134,34 +134,43 @@
 </head>
 <body>
 <div class="header">
-    <a href="#">Login / Register</a>
-    <a href="#">Logout</a>
-    <a href="#">History</a>
+    {% if not authorized %}
+        <a href="/login?method=Username">Login</a>
+        <a href="/register">Register</a>
+    {% endif %}
+    {% if authorized %}
+        Hello,{{ email }}!
+        <a href="/logout">Logout</a>
+    {% endif %}
+    <a href="/history">History</a>
 </div>
 
 <div class="container">
     <div class="input-container">
         <form action="/generate" method="post">
-            <input minlength="1" maxlength="30" type="text" name="keyword" id="keyword" placeholder="Enter your keywords">
+            <input minlength="1" maxlength="30" type="text" name="keyword" id="keyword"
+                   placeholder="Enter your keywords">
             <button type="submit">Generate</button>
         </form>
     </div>
     <div id="quoteContainer">
         {% if message %}
             <p>"{{ message }}"</p>
-            <input type="text" id="textToCopy" value="{{ message }}" style="display: none;">
-            <button class="small-styled-button" onclick="copyToClipboard()">Copy Quote</button>
+            {% if ok == "True" %}
+                <input type="text" id="textToCopy" value="{{ message }}" style="display: none;">
+                <button class="small-styled-button" onclick="copyToClipboard()">Copy Quote</button>
+            {% endif %}
         {% endif %}
     </div>
     <div id="imageContainer">
         {% if imgName %}
-            <img src="../static/{{ imgName }}" alt="Generated Image" hieght = "500" width = "500">
+            <img src="../static/{{ imgName }}" alt="Generated Image" height="500" width="500">
             <a href="../static/{{ imgName }}" download="{{ imgName }}">
                 <button class="styled-button">Download Image</button>
             </a>
         {% endif %}
     </div>
-    <div id="container"> 
+    <div id="container">
         {% if message and imgName %}
             <form action="/saveToHistory" method="post">
                 <input type="text" name="quote" id="quote" value="{{ message }}" style="display: none;">
