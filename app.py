@@ -198,8 +198,14 @@ def frontPage():
         imgPath = request.args.get('imgPath')
         imgName = request.args.get('imgName')
         redirectFromSave = request.args.get('redirectFromSave')
+        ok = request.args.get('ok')
+        if not current_user.is_authenticated:
+            email = None
+        else:
+            email = current_user.id
         return render_template('frontend.html', message=message, imgPath=imgPath,
-                               imgName=imgName, redirectFromSave=redirectFromSave)
+                               imgName=imgName, redirectFromSave=redirectFromSave,
+                               authorized=current_user.is_authenticated, email=email, ok=ok)
     elif not current_user.is_authenticated:
         return f"Hello!"
     return f"Hello, you are logged in as {current_user.id}"
@@ -219,7 +225,7 @@ def unauthorized_handler():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('hello_world'))
+    return redirect(url_for('frontPage', test=True))
 
 
 @app.route('/login', methods=['GET', 'POST'])
