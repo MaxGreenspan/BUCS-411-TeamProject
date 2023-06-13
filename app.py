@@ -324,6 +324,8 @@ def downloadOpenai():
 @app.route('/history')
 @login_required
 def load_history():
+    imgname = request.args.get('imgname')
+    quote = request.args.get('quote')
     email = current_user.id
     c = conn.cursor()
     c.execute(f"SELECT * FROM history WHERE email='{email}' ORDER BY hid DESC")
@@ -337,7 +339,7 @@ def load_history():
             'description': t[5],
         }
         final.append(d)
-    return render_template('history.html', data=final)
+    return render_template('history.html', data=final, imgname=imgname, quote=quote)
 
 
 @app.route('/generate', methods=['POST'])

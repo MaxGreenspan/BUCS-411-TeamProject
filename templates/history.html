@@ -53,10 +53,40 @@
 
         body {
             background-color: #eaf7ea; /* Light green background */
+            margin-top: 20px; /* Add margin at the top to separate the top bar from the table */
+        }
+
+        .top-bar {
+            background-color: #ddd;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        .top-bar a:hover {
+            background-color: #f2f2f2;
         }
     </style>
 </head>
 <body>
+<div class="top-bar">
+    <div>
+        <a href="/logout">Logout</a>
+        <a href="/?ok=True&message={{ quote }}&imgName={{ imgname }}">Home</a>
+    </div>
+
+
+</div>
+<br>
 <header>
     <div>
         <span>Left Text</span>
