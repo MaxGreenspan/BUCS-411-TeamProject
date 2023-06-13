@@ -39,6 +39,14 @@
             width: auto;
             padding: 10px 18px;
             background-color: #f44336;
+            text-decoration: none;
+        }
+
+        .registerbutton {
+            width: auto;
+            padding: 10px 18px;
+            background-color: #f4a236;
+            text-decoration: none;
         }
 
 
@@ -59,6 +67,10 @@
             }
 
             .cancelbutton {
+                width: 100%;
+            }
+
+            .registerbutton {
                 width: 100%;
             }
         }
@@ -91,10 +103,15 @@
         </button>
     </a>
 </div>
-<div class="container" style="background-color:#f1f1f1;text-align: center;  ">
-    <a href="/?test=True">
+<div class="container" style="background-color:#f1f1f1;text-align: center;text-decoration:none">
+    <a href="/register" style="text-decoration: none">
+        <button type="button" class="registerbutton">Register</button>
+    </a>
+    <a href="/?test=True" style="text-decoration: none">
         <button type="button" class="cancelbutton">Cancel</button>
     </a>
+
+
 </div>
 
 

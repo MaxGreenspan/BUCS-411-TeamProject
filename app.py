@@ -33,9 +33,6 @@ with open("secrets/google_secret") as f:
 with open("secrets/chatgpt_api_key") as f:
     openai.api_key = f.readline()
 
-if not os.path.exists("./img"):
-    os.mkdir('img')
-
 mysql = MySQL()
 app = Flask(__name__, static_url_path="/static")
 
@@ -193,22 +190,18 @@ def user_loader(email):
 
 @app.route('/')
 def frontPage():
-    if request.args.get('test') == 'True':
-        message = request.args.get('message')
-        imgPath = request.args.get('imgPath')
-        imgName = request.args.get('imgName')
-        redirectFromSave = request.args.get('redirectFromSave')
-        ok = request.args.get('ok')
-        if not current_user.is_authenticated:
-            email = None
-        else:
-            email = current_user.id
-        return render_template('frontend.html', message=message, imgPath=imgPath,
-                               imgName=imgName, redirectFromSave=redirectFromSave,
-                               authorized=current_user.is_authenticated, email=email, ok=ok)
-    elif not current_user.is_authenticated:
-        return f"Hello!"
-    return f"Hello, you are logged in as {current_user.id}"
+    message = request.args.get('message')
+    imgPath = request.args.get('imgPath')
+    imgName = request.args.get('imgName')
+    redirectFromSave = request.args.get('redirectFromSave')
+    ok = request.args.get('ok')
+    if not current_user.is_authenticated:
+        email = None
+    else:
+        email = current_user.id
+    return render_template('frontend.html', message=message, imgPath=imgPath,
+                           imgName=imgName, redirectFromSave=redirectFromSave,
+                           authorized=current_user.is_authenticated, email=email, ok=ok)
 
 
 @app.route('/testLog')
@@ -333,7 +326,7 @@ def downloadOpenai():
 def load_history():
     email = current_user.id
     c = conn.cursor()
-    c.execute(f"SELECT * FROM history WHERE email='{email}'")
+    c.execute(f"SELECT * FROM history WHERE email='{email}' ORDER BY hid DESC")
     result = c.fetchall()
     final = []
     for t in result:
@@ -382,7 +375,7 @@ def saveToHistory():
         "INSERT INTO history(email, quote, imgname,description,date) \
         VALUES(%s,%s,%s,%s,%s)", (current_user.id, quote, imgName, description, getCurrentDate()))
     conn.commit()
-    return redirect(url_for("frontPage", imgName=imgName, message=quote, redirectFromSave=True, test=True))
+    return redirect(url_for("frontPage", imgName=imgName, message=quote, redirectFromSave=True, test=True, ok=True))
 
 
 def encodeimage(script):

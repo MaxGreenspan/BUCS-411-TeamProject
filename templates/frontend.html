@@ -45,6 +45,14 @@
             text-decoration: none;
         }
 
+        button:hover {
+            opacity: 0.8;
+        }
+
+        a:hover {
+            opacity: 0.7;
+        }
+
         .container {
             display: flex;
             align-items: center;
@@ -135,11 +143,14 @@
 <body>
 <div class="header">
     {% if not authorized %}
+        <em style="color: hotpink">Welcome to Quotitian! You are not logged in!</em>
+        <br>
         <a href="/login?method=Username">Login</a>
         <a href="/register">Register</a>
     {% endif %}
     {% if authorized %}
-        Hello,{{ email }}!
+        <em style="color: hotpink">Welcome to Quotitian,{{ email }}!</em>
+        <br>
         <a href="/logout">Logout</a>
     {% endif %}
     <a href="/history">History</a>
@@ -175,7 +186,8 @@
             <form action="/saveToHistory" method="post">
                 <input type="text" name="quote" id="quote" value="{{ message }}" style="display: none;">
                 <input type="text" name="imgName" id="imgName" value="{{ imgName }}" style="display: none;">>
-                <input type="text" name="description" id="description" placeholder="Enter your description">
+                <input type="text" name="description" id="description"
+                       placeholder="Enter your description" required>
                 <button class="small-styled-button" type="submit">Save to history</button>
             </form>
         {% endif %}
