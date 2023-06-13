@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inspirational Quote Generator</title>
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        #imageContainer img {
+            max-width: 100%; /* Limit the image width to its container */
+            max-height: 300px; /* Set a maximum height for the image */
+            object-fit: contain; /* Maintain the aspect ratio of the image */
+        }
+    </style>
+</head>
+<body>
+{% if message %}
+    {% set m = message %}
+    <h2>{{ m }}</h2>
+{% endif %}
+<form action="/generate" method="post">
+    <div class="container">
+        <input type="text" id="keyword" name="keyword" placeholder="Enter your keywords">
+        <button type="submit">Generate</button>
+        <div id="quoteContainer"></div>
+        <div id="imageContainer"></div>
+    </div>
+</form>
+{% if imgName %}
+    <img src="../static/{{ imgName }}" alt="image">
+    <button href="/"></button>
+{% endif %}
+
+<script>
+    function generateQuote() {
+        var keywordInput = document.getElementById("keywordInput").value;
+        // Perform API call or data processing here to generate the quote and image based on the keywordInput
+        // Replace the following lines with your actual implementation
+        var generatedQuote = "This is a generated quote.";
+        var generatedImage = "uglyaa.png"; // Update the image file name and path if necessary
+        displayGeneratedContent(generatedQuote, generatedImage);
+    }
+
+    function displayGeneratedContent(quote, image) {
+        var quoteContainer = document.getElementById("quoteContainer");
+        quoteContainer.innerHTML = "<p>" + quote + "</p>";
+
+        var imageContainer = document.getElementById("imageContainer");
+        imageContainer.innerHTML = "<img src='" + image + "' alt='Generated Image'>";
+    }
+</script>
+</body>
+</html>

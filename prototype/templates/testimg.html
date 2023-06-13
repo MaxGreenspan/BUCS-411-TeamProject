@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Download Button</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .centered-image {
+            display: flex;
+            justify-content: center;
+        }
+
+        .styled-button {
+            background-color: #FF0000;
+            color: #FFFFFF;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="centered-image">
+    <img src="data:image/png;base64,{{ getImgDataFromName(name) }}">
+</div>
+<div>
+    <a href="data:image/png;base64,{{ getImgDataFromName(name) }}" download="{{ name }}">
+        <button class="styled-button">Download File</button>
+    </a>
+</div>
+</body>
+</html>
