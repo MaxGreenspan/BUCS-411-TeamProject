@@ -1,6 +1,6 @@
-A user wants to search something. But before the user input something, the user mistyped some random characters in the search bar.
+A user wants to search something. But before the user inputs something, the user mistyped some random characters in the search bar.
 Now, the keyword is no longer a valid english word.
 In this situation, if the service cannot understand the word, the user sees something like:
 "Sorry, but this word is invalid. Try inputting a different word!"
-The user goes back and do a normal search.
+The user goes back and does a normal search.
 Then refer to story_1.
