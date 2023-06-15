@@ -1,4 +1,4 @@
 The user wants to register, but the email is already registered.
-The user does the exact things to register as described in previous story.
-The user sees a text on top of the register page, that reminds of the user that the email is already registered.
-Then, refer to stories above for what the user can do next.
+The user does the exact things to register as described in the previous story.
+The user sees text on the top of the register page that reminds the user that the email has already been registered.
+Then, refer to stories 1-5 for what the user can do next.
