@@ -4,4 +4,4 @@ The user enters their email and password into the two boxes.
 the system successfully registers the account.
 The user is redirected to the login page.
 After that, the user enters their email and password into the two boxes described above.
-The user gets logged in normally, and can do anything that is mentioned to in the above stories.
+The user gets logged in normally, and can do anything that is mentioned to in the above stories 1-4.
