@@ -99,9 +99,9 @@
 </head>
 
 <div class="header">
-        <em style="color: hotpink">history</em>
-        <br>
-        <a href="/logout">Logout</a>
+    <em style="color: hotpink">history</em>
+    <br>
+    <a href="/logout">Logout</a>
     <a href="/">Home</a>
 </div>
 
@@ -117,10 +117,10 @@
 <table>
     <thead>
     <tr>
-        <th>description</th>
-        <th>date</th>
-        <th>quote</th>
-        <th>image</th>
+        <th>Description</th>
+        <th>Date</th>
+        <th>Quote</th>
+        <th>Image</th>
     </tr>
     </thead>
     <tbody>
@@ -131,7 +131,8 @@
             <td>
                 {{ entry['quote'] }}
                 <input type="text" style="display: none;">
-                <button class="small-styled-button" onclick="copyToClipboard(`{{ entry['quote'] }}`)">copy quote</button>
+                <button class="small-styled-button" onclick="copyToClipboard(`{{ entry['quote'] }}`)">copy quote
+                </button>
             </td>
             <td>
                 <img src="../static/{{ entry['imgname'] }}" alt="Generated Image" height="350" width="350">

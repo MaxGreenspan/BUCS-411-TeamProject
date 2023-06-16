@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Quote Generator</title>
+    <title>Quote Generator Home</title>
     <script>
         {% if redirectFromSave %}
             window.onload = function () {
                 alert("Saved to history!"); // Replace with your desired alert message
+            };
+        {% endif %}
+
+        {% if redirectFromHistory %}
+            window.onload = function () {
+                alert("Cannot save to history if not logged in!"); // Replace with your desired alert message
             };
         {% endif %}
 
@@ -109,7 +115,7 @@
         }
 
         .styled-button {
-            font-size: 22px;
+            font-size: 18px;
             background-color: #000000;
             color: white;
             border: none;
@@ -153,14 +159,14 @@
         <br>
         <a href="/logout">Logout</a>
     {% endif %}
-    <a href="/history?imgname={{ imgName }}&quote={{ message }}">History</a>
+    <a href="/history">History</a>
 </div>
 
 <div class="container">
     <div class="input-container">
         <form action="/generate" method="post">
             <input minlength="1" maxlength="30" type="text" name="keyword" id="keyword"
-                   placeholder="Enter your keywords">
+                   placeholder="Enter your keywords" required>
             <button type="submit">Generate</button>
         </form>
     </div>
@@ -169,7 +175,7 @@
             <p>"{{ message }}"</p>
             {% if ok == "True" %}
                 <input type="text" id="textToCopy" value="{{ message }}" style="display: none;">
-                <button class="small-styled-button" onclick="copyToClipboard()">copy</button>
+                <button class="small-styled-button" onclick="copyToClipboard()">Copy Quote</button>
             {% endif %}
         {% endif %}
     </div>
@@ -188,7 +194,7 @@
                 <input type="text" name="imgName" id="imgName" value="{{ imgName }}" style="display: none;">>
                 <input type="text" name="description" id="description"
                        placeholder="Enter your description" required>
-                <button class="small-styled-button" type="submit">save to history</button>
+                <button class="small-styled-button" type="submit">Save to history</button>
             </form>
         {% endif %}
     </div>

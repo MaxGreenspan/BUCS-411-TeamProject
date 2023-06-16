@@ -39,7 +39,7 @@ app = Flask(__name__, static_url_path="/static")
 # These will need to be changed according to your credentials.
 # about things that needs to be changed, see comments.
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Nashville2003'  # NOTE:change this to your mysql password.
+app.config['MYSQL_DATABASE_PASSWORD'] = 'zhuceyezi'  # NOTE:change this to your mysql password.
 app.config['MYSQL_DATABASE_DB'] = 'CS411'  # Also change this if your database name is not CS411.
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -194,13 +194,14 @@ def frontPage():
     imgPath = request.args.get('imgPath')
     imgName = request.args.get('imgName')
     redirectFromSave = request.args.get('redirectFromSave')
+    redirectFromHistory = request.args.get('redirectFromHistory')
     ok = request.args.get('ok')
     if not current_user.is_authenticated:
         email = None
     else:
         email = current_user.id
     return render_template('frontend.html', message=message, imgPath=imgPath,
-                           imgName=imgName, redirectFromSave=redirectFromSave,
+                           imgName=imgName, redirectFromSave=redirectFromSave, redirectFromHistory=redirectFromHistory,
                            authorized=current_user.is_authenticated, email=email, ok=ok)
 
 
@@ -212,7 +213,9 @@ def testLog():
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return f"You are not logged in!"
+    quote = request.form.get('quote')
+    imgName = request.form.get('imgName')
+    return redirect(url_for('frontPage', test=True, message=quote, imgName=imgName, redirectFromHistory=True))
 
 
 @app.route('/logout')
@@ -245,8 +248,8 @@ def login():
         else:
             c.execute(f"SELECT email FROM Users u WHERE u.email = '{email}'")
             if c.fetchone() is not None:
-                return f"Wrong Username or password!"
-            return f"Not registered yet!"
+                return render_template('login.html', message="Wrong email or password!")
+            return render_template('login.html', message="Not registered yet!")
     elif method == 'Username' and request.method == 'GET':
         return render_template('login.html', message=message)
 
@@ -324,8 +327,6 @@ def downloadOpenai():
 @app.route('/history')
 @login_required
 def load_history():
-    imgname = request.args.get('imgname')
-    quote = request.args.get('quote')
     email = current_user.id
     c = conn.cursor()
     c.execute(f"SELECT * FROM history WHERE email='{email}' ORDER BY hid DESC")
@@ -339,7 +340,7 @@ def load_history():
             'description': t[5],
         }
         final.append(d)
-    return render_template('history.html', data=final, imgname=imgname, quote=quote)
+    return render_template('history.html', data=final)
 
 
 @app.route('/generate', methods=['POST'])
@@ -374,7 +375,7 @@ def saveToHistory():
     imgName = request.form.get('imgName')
     c = conn.cursor()
     c.execute(
-        "INSERT INTO history(email, quote, imgname,description,date) \
+        "INSERT INTO history(email, quote, imgname, description, date) \
         VALUES(%s,%s,%s,%s,%s)", (current_user.id, quote, imgName, description, getCurrentDate()))
     conn.commit()
     return redirect(url_for("frontPage", imgName=imgName, message=quote, redirectFromSave=True, test=True, ok=True))
@@ -421,6 +422,7 @@ def getimage(prompt):
         with open(image_file, mode="wb") as png:
             png.write(image_data)
     return f"{JSON_FILE.stem}-{index}.png"
+
 
 if __name__ == '__main__':
     app.run()
