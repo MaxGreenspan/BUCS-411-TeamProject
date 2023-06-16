@@ -1,0 +1,3 @@
+User attempts to generate an image using a NSFW prompt.
+The user is not returned an image or a quote, and is instead told "The service cannot understand your input!"
+Then refer to stories 1-5.
