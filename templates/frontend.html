@@ -109,7 +109,7 @@
         }
 
         .styled-button {
-            font-size: 18px;
+            font-size: 22px;
             background-color: #000000;
             color: white;
             border: none;
@@ -149,7 +149,7 @@
         <a href="/register">Register</a>
     {% endif %}
     {% if authorized %}
-        <em style="color: hotpink">Welcome to Quotitian,{{ email }}!</em>
+        <em style="color: hotpink">Welcome to Quotitian, {{ email }}!</em>
         <br>
         <a href="/logout">Logout</a>
     {% endif %}
@@ -169,7 +169,7 @@
             <p>"{{ message }}"</p>
             {% if ok == "True" %}
                 <input type="text" id="textToCopy" value="{{ message }}" style="display: none;">
-                <button class="small-styled-button" onclick="copyToClipboard()">Copy Quote</button>
+                <button class="small-styled-button" onclick="copyToClipboard()">copy</button>
             {% endif %}
         {% endif %}
     </div>
@@ -188,7 +188,7 @@
                 <input type="text" name="imgName" id="imgName" value="{{ imgName }}" style="display: none;">>
                 <input type="text" name="description" id="description"
                        placeholder="Enter your description" required>
-                <button class="small-styled-button" type="submit">Save to history</button>
+                <button class="small-styled-button" type="submit">save to history</button>
             </form>
         {% endif %}
     </div>

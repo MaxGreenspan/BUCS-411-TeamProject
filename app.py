@@ -39,7 +39,7 @@ app = Flask(__name__, static_url_path="/static")
 # These will need to be changed according to your credentials.
 # about things that needs to be changed, see comments.
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'zhuceyezi'  # NOTE:change this to your mysql password.
+app.config['MYSQL_DATABASE_PASSWORD'] = 'Nashville2003'  # NOTE:change this to your mysql password.
 app.config['MYSQL_DATABASE_DB'] = 'CS411'  # Also change this if your database name is not CS411.
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -421,7 +421,6 @@ def getimage(prompt):
         with open(image_file, mode="wb") as png:
             png.write(image_data)
     return f"{JSON_FILE.stem}-{index}.png"
-
 
 if __name__ == '__main__':
     app.run()

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Table Template</title>
+    <title>Quote Generator History</title>
     <script>
         function copyToClipboard(copyText) {
             navigator.clipboard.writeText(copyText)
@@ -15,6 +15,31 @@
         }
     </script>
     <style>
+
+        body {
+            background-image: url('../static/background.png'); /* Light green background */
+        }
+
+        .header {
+            position: absolute;
+            margin-bottom: 30px;
+            left: 0;
+            cursor: auto;
+            z-index: 9999; /* Adjust the value as needed */
+            display: flex;
+            color: black;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+            font-family: 'Arial';
+        }
+
+        .header a {
+            margin-left: 10px;
+            color: black;
+            text-decoration: none;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -23,12 +48,13 @@
         th, td {
             padding: 8px;
             text-align: left;
+            align-content: center;
             border-bottom: 1px solid #ddd;
             border-right: 1px solid #ddd;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #ffffff;
         }
 
         h3 {
@@ -37,7 +63,7 @@
         }
 
         header {
-            background-color: #ddd; /* Gray bar color */
+            background-color: #ffffff00; /* Gray bar color */
             padding: 10px;
             height: 40px; /* Fixed height for the gray bar */
             overflow: hidden; /* Hide any overflow content */
@@ -51,58 +77,50 @@
             padding-left: 20px;
         }
 
-        body {
-            background-color: #eaf7ea; /* Light green background */
-            margin-top: 20px; /* Add margin at the top to separate the top bar from the table */
-        }
-
-        .top-bar {
-            background-color: #ddd;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .top-bar a {
+        .small-styled-button {
             margin-left: 10px;
-            text-decoration: none;
-            color: #333;
-            padding: 5px 10px;
-            border-radius: 3px;
+            font-size: 10px;
+            background-color: #000000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 6px 10px;
         }
 
-        .top-bar a:hover {
-            background-color: #f2f2f2;
+        .small-styled-button-download {
+            font-size: 10px;
+            background-color: #000000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 6px 10px;
         }
     </style>
 </head>
-<body>
-<div class="top-bar">
-    <div>
+
+<div class="header">
+        <em style="color: hotpink">history</em>
+        <br>
         <a href="/logout">Logout</a>
-        <a href="/?ok=True&message={{ quote }}&imgName={{ imgname }}">Home</a>
-    </div>
-
-
+    <a href="/">Home</a>
 </div>
-<br>
+
 <header>
     <div>
-        <span>Left Text</span>
+        <span></span>
     </div>
-    <h3>My Table</h3>
+    <h3></h3>
     <div>
-        <span>Right Text</span>
+        <span></span>
     </div>
 </header>
 <table>
     <thead>
     <tr>
-        <th>Description</th>
-        <th>Date</th>
-        <th>Quote</th>
-        <th>Image</th>
+        <th>description</th>
+        <th>date</th>
+        <th>quote</th>
+        <th>image</th>
     </tr>
     </thead>
     <tbody>
@@ -113,13 +131,12 @@
             <td>
                 {{ entry['quote'] }}
                 <input type="text" style="display: none;">
-                <button class="small-styled-button" onclick="copyToClipboard(`{{ entry['quote'] }}`)">Copy Quote
-                </button>
+                <button class="small-styled-button" onclick="copyToClipboard(`{{ entry['quote'] }}`)">copy quote</button>
             </td>
             <td>
-                <img src="../static/{{ entry['imgname'] }}" alt="Generated Image" height="500" width="500">
+                <img src="../static/{{ entry['imgname'] }}" alt="Generated Image" height="350" width="350">
                 <a href="../static/{{ entry['imgname'] }}" download="{{ entry['imgname'] }}">
-                    <button class="styled-button">Download Image</button>
+                    <button class="small-styled-button-download">download</button>
                 </a>
             </td>
         </tr>
