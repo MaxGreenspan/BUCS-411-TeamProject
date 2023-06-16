@@ -39,7 +39,7 @@ app = Flask(__name__, static_url_path="/static")
 # These will need to be changed according to your credentials.
 # about things that needs to be changed, see comments.
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Nashville2003'  # NOTE:change this to your mysql password.
+app.config['MYSQL_DATABASE_PASSWORD'] = 'BostonU#3087'  # NOTE:change this to your mysql password.
 app.config['MYSQL_DATABASE_DB'] = 'CS411'  # Also change this if your database name is not CS411.
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -374,7 +374,7 @@ def saveToHistory():
     imgName = request.form.get('imgName')
     c = conn.cursor()
     c.execute(
-        "INSERT INTO history(email, quote, imgname,description,date) \
+        "INSERT INTO history(email, quote, imgname, description, date) \
         VALUES(%s,%s,%s,%s,%s)", (current_user.id, quote, imgName, description, getCurrentDate()))
     conn.commit()
     return redirect(url_for("frontPage", imgName=imgName, message=quote, redirectFromSave=True, test=True, ok=True))
