@@ -213,9 +213,12 @@ def testLog():
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    quote = request.form.get('quote')
-    imgName = request.form.get('imgName')
-    return redirect(url_for('frontPage', test=True, message=quote, imgName=imgName, redirectFromHistory=True))
+    if request.method == "POST":
+        quote = request.form.get('quote')
+        imgName = request.form.get('imgName')
+        return redirect(url_for('frontPage', test=True, message=quote, imgName=imgName, redirectFromHistory=True))
+    else:
+        return render_template("login.html")
 
 
 @app.route('/logout')
