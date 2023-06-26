@@ -12,6 +12,12 @@ Stefan Pretorius - stefanjp@bu.edu
 
 **Project Title: Quotidian—Inspirational Quote Generator and Visualization Tool**
 
+**Demo:
+https://youtu.be/l94lzJ7G5hY
+or
+https://www.youtube.com/watch?v=l94lzJ7G5hY
+**
+
 *Description:*
 
 This project, undertaken as part of our software engineering course, aims to design and implement a comprehensive quote generation system. The crux of this project lies in the integration of user-defined keyword inputs to deliver corresponding motivational quotes and accompanying visual elements in response.
