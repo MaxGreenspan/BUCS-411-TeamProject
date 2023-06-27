@@ -12,12 +12,11 @@ Stefan Pretorius - stefanjp@bu.edu
 
 **Project Title: Quotidian—Inspirational Quote Generator and Visualization Tool**
 
-**Demo:
+**Demo:**
 https://youtu.be/l94lzJ7G5hY
 or
 https://www.youtube.com/watch?v=l94lzJ7G5hY
-By Liang Han
-**
+**By Liang Han**
 
 *Description:*
 
