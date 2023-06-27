@@ -41,7 +41,7 @@ Widget Implementation: Develops a condensed version of the application that can 
 
 The successful completion of this project will provide an interactive and user-oriented platform for generating personalized motivational content. In its extended form as a widget, it has the potential to enhance user experience across various platforms, reinforcing the value of interactive, personalized content in daily digital interactions.
 
-*User Manual:*
+**User Manual:**
 
 Thanks for using Quotidian: the Inspirational Quote Generator and Visualization Tool.
 
